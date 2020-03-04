@@ -7,6 +7,10 @@ source "$SCRIPTDIR/01-setupVars.sh"
 
 finish() {
     set +x
+    if [[ -f "${SCRIPTDIR%/*}/k3s.yaml" ]]; then
+        echo ""
+        echo "export KUBECONFIG=${SCRIPTDIR%/*}/k3s.yaml"
+    fi
 }
 trap finish EXIT
 
@@ -34,12 +38,13 @@ sleep 10
 
 echo "############################################################################"
 # multipass exec node1 -- bash -c "sudo kubectl get nodes"
-multipass exec "${NODES[0]}" -- bash -c 'sudo cat /etc/rancher/k3s/k3s.yaml' > "$SCRIPTDIR/../k3s.yaml"
-sed -i'.back' -e "s/127.0.0.1/${NODES[0]}/g" "$SCRIPTDIR/../k3s.yaml"
-export KUBECONFIG="$SCRIPTDIR/../k3s.yaml"
+multipass exec "${NODES[0]}" -- bash -c 'sudo cat /etc/rancher/k3s/k3s.yaml' > "${SCRIPTDIR%/*}/k3s.yaml"
+sed -i'.back' -e "s/127.0.0.1/${NODES[0]}/g" "${SCRIPTDIR%/*}/k3s.yaml"
+export KUBECONFIG="${SCRIPTDIR%/*}/k3s.yaml"
 kubectl taint node "${NODES[0]}" node-role.kubernetes.io/master=effect:NoSchedule
 for (( i=1; i<${#NODES[@]}; i++ )); do
     kubectl label node "${NODES[$i]}" node-role.kubernetes.io/node=
 done
+sleep 2
 kubectl get nodes
 echo "done."

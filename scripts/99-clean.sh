@@ -10,13 +10,20 @@ finish() {
 }
 trap finish EXIT
 
-set -e
 set -x
 
 multipass delete ${NODES[@]}
 multipass purge
 multipass ls
 
-rm "$SCRIPTDIR/hosts"
-rm "$SCRIPTDIR/etchosts"
-rm "$SCRIPTDIR/etchosts.unix"
+set +x
+echo ""
+
+echo "removing temporary files (if exist):"
+rm -v "${SCRIPTDIR%/*}/k3s.yaml"      2>/dev/null
+rm -v "${SCRIPTDIR%/*}/k3s.yaml.back" 2>/dev/null
+rm -v "$SCRIPTDIR/hosts"              2>/dev/null
+rm -v "$SCRIPTDIR/etchosts"           2>/dev/null
+rm -v "$SCRIPTDIR/etchosts.unix"      2>/dev/null
+
+echo "done."
