@@ -1,0 +1,4 @@
+scripts/etchosts
+scripts/etchosts.unix
+scripts/hosts
+scripts/k3s_install.sh
