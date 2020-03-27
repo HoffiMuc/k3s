@@ -3,18 +3,20 @@
 SCRIPTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
 # defines NODES array
-source "$SCRIPTDIR/01-setupVars.sh"
+source "$SCRIPTDIR/00-setupVars.sh"
 
 finish() {
+    errorcode=$?
     set +x
     if [[ -f "${SCRIPTDIR%/*}/k3s.yaml" ]]; then
         echo ""
         echo "export KUBECONFIG=${SCRIPTDIR%/*}/k3s.yaml"
     fi
+    return $errorcode
 }
 trap finish EXIT
 
-set -e
+set -ue
 set -x
 
 # if [[ ! -f "$SCRIPTDIR/k3s_install.sh" ]]; then
@@ -25,14 +27,14 @@ set -x
 # done
 
 # Deploy k3s master on node1
-multipass exec "${NODES[0]}" -- /bin/bash -c "curl -sfL https://get.k3s.io | sh -"
+multipass exec "${NODES[0]}" -- /bin/bash -c "curl -sfL -C - https://get.k3s.io | sh -"
 # Get the IP of the master node
 K3S_NODEIP_MASTER="https://$(multipass info "${NODES[0]}" | grep "IPv4" | awk -F' ' '{print $2}'):6443"
 # Get the TOKEN from the master node
 K3S_TOKEN="$(multipass exec "${NODES[0]}" -- /bin/bash -c "sudo cat /var/lib/rancher/k3s/server/node-token")"
 # Deploy k3s on the worker nodes (all but the first in NODES array)
 for (( i=1; i<${#NODES[@]}; i++ )); do
-    multipass exec "${NODES[$i]}" -- /bin/bash -c "curl -sfL https://get.k3s.io | K3S_TOKEN=${K3S_TOKEN} K3S_URL=${K3S_NODEIP_MASTER} sh -"
+    multipass exec "${NODES[$i]}" -- /bin/bash -c "curl -sfL -C - https://get.k3s.io | K3S_TOKEN=${K3S_TOKEN} K3S_URL=${K3S_NODEIP_MASTER} sh -"
 done
 sleep 10
 

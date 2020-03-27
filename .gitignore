@@ -1,6 +1,7 @@
+/.idea/
+/tmp/
 /k3s.yaml
 /k3s.yaml.back
-scripts/etchosts
-scripts/etchosts.unix
-scripts/hosts
-scripts/k3s_install.sh
+run/etchosts
+run/etchosts.unix
+run/hosts

@@ -2,13 +2,18 @@
 
 SCRIPTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
+# defines NODES array
+source "$SCRIPTDIR/00-setupVars.sh"
+
 finish() {
+    errorcode=$?
     set +x
+    return $errorcode
 }
 trap finish EXIT
 
-set -e
+set -ue
 set -x
+multipass suspend ${NODES[@]}
 
-$SCRIPTDIR/02-setupVMs.sh
-$SCRIPTDIR/03-deployK3s.sh
+echo "done."
