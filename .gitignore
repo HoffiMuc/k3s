@@ -1,5 +1,6 @@
 /.idea/
 /tmp/
+/certs/
 /k3s.yaml
 /k3s.yaml.back
 run/etchosts

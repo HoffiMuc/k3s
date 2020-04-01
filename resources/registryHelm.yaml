@@ -1,0 +1,17 @@
+# https://rancher.com/docs/k3s/latest/en/helm/
+apiVersion: helm.cattle.io/v1
+kind: HelmChart
+metadata:
+  name: docker-registry
+  namespace: kube-system
+spec:
+  chart: stable/docker-registry
+  targetNamespace: kube-system
+  valuesContent: |-
+    service:
+      name: registry
+      type: LoadBalancer
+    persistence:
+      enabled: true
+      storageClass: local-path
+    tlsSecretName: registry-ingress-tls
