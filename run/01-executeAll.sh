@@ -14,3 +14,4 @@ set -x
 
 $SCRIPTDIR/02-setupVMs.sh
 $SCRIPTDIR/03-deployK3s.sh
+$SCRIPTDIR/05-firstTimeK3sConfig.sh

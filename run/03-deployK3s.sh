@@ -31,6 +31,7 @@ set -ue
 set -x
 
 # Deploy k3s master on node0
+echo ""
 if [[ -z "$LOCALK3SBIN" ]]; then
     multipass exec "${NODES[0]}" -- /bin/bash -c "curl -fL -C - https://get.k3s.io | sh -"
 else
@@ -46,6 +47,7 @@ K3S_NODEIP_MASTER="https://$(multipass info "${NODES[0]}" | grep "IPv4" | awk -F
 K3S_TOKEN="$(multipass exec "${NODES[0]}" -- /bin/bash -c "sudo cat /var/lib/rancher/k3s/server/node-token")"
 # Deploy k3s on the worker nodes (all but the first in NODES array)
 for (( i=1; i<${#NODES[@]}; i++ )); do
+    echo ""
     if [[ -z "$LOCALK3SBIN" ]]; then
         multipass exec "${NODES[$i]}" -- /bin/bash -c "curl -sfL -C - https://get.k3s.io | K3S_TOKEN=${K3S_TOKEN} K3S_URL=${K3S_NODEIP_MASTER} sh -"
     else
