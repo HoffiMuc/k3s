@@ -30,10 +30,12 @@ fi
 set -ue
 set -x
 
+if [[ $(ps -e | grep dnsmasq | wc -l) -gt 1 ]]; then echo "CAREFULL dnsmasq is running!!!" ; fi
+
 # Deploy k3s master on node0
 echo ""
 if [[ -z "$LOCALK3SBIN" ]]; then
-    multipass exec "${NODES[0]}" -- /bin/bash -c "curl -fL -C - https://get.k3s.io | sh -"
+    multipass exec "${NODES[0]}" -- /bin/bash -c "curl -sfL -C - https://get.k3s.io | sh -"
 else
     multipass transfer ${SCRIPTDIR}/k3sLocalScript/k3sInstall.sh ${NODES[0]}:/tmp/install.sh
     multipass transfer ${LOCALK3SBIN} ${NODES[0]}:/tmp/k3s.bin
@@ -58,7 +60,7 @@ for (( i=1; i<${#NODES[@]}; i++ )); do
         multipass exec "${NODES[$i]}" -- /bin/bash -c "K3S_TOKEN=${K3S_TOKEN} K3S_URL=${K3S_NODEIP_MASTER} sh /tmp/install.sh local"
     fi
 done
-sleep 10
+sleep 5
 
 echo "############################################################################"
 # multipass exec node1 -- bash -c "sudo kubectl get nodes"
@@ -69,5 +71,5 @@ kubectl taint node "${NODES[0]}" node-role.kubernetes.io/master=effect:NoSchedul
 for (( i=1; i<${#NODES[@]}; i++ )); do
     kubectl label node "${NODES[$i]}" node-role.kubernetes.io/node=
 done
-sleep 2
+sleep 1
 kubectl get nodes

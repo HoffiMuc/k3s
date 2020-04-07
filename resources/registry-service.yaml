@@ -1,0 +1,15 @@
+kind: Service
+apiVersion: v1
+metadata:
+  namespace: kube-system
+  name: image-registry
+  labels:
+    app: image-registry
+spec:
+  type: LoadBalancer
+  selector:
+    app: image-registry
+  ports:
+    - name: https
+      port: 443 # has to be 443 for docker push ending up with TLS at registry container
+      targetPort: 5000

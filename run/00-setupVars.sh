@@ -3,6 +3,7 @@
 silent=false
 if [[ ! -z $1 ]]; then silent=true ; fi
 
+export MYCLUSTER_DOMAIN=mycluster.tld
 export NODECOUNT=4
 export NODENAMEPREFIX="node"
 

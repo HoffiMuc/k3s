@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: netshoot
+  labels:
+    name: netshoot
+spec:
+  containers:
+    - image: nicolaka/netshoot
+      name: netshoot-container
