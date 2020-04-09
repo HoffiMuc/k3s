@@ -1,24 +1,30 @@
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  namespace: kube-system
   name: registry-ingress
+  namespace: registry-ns
   annotations:
     kubernetes.io/ingress.class: "traefik"
     traefik.kubernetes.io/rewrite-target: /
+    #cert-manager.io/cluster-issuer: "issuer-selfsigned"
+    #traefik.ingress.kubernetes.io/preserve-host: "true"
+    #
+    # useless:
     #traefik.ingress.kubernetes.io/service.serversscheme: https
+    #traefik.ingress.kubernetes.io/ssl-redirect: "true"
     #nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
-    #nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
 spec:
+  # tls section terminates TLS at the ingress controller
   tls:
     - hosts:
-        - registry.mycluster.tld
-    - secretName: registry-ingress-tls
+        - registry.hoffimuc.com
+      secretName: docker-registry-tls
+      #secretName: selfsigned-cert
   rules:
-    - host: registry.mycluster.tld
+    - host: registry.hoffimuc.com
       http:
         paths:
           - backend:
-              serviceName: image-registry
-              servicePort: 443 # has to be 443 for docker push ending up with TLS at registry container
+              serviceName: docker-registry
+              servicePort: 5000
             path: /

@@ -7,10 +7,10 @@ metadata:
     traefik.ingress.kubernetes.io/rule-type: "PathPrefixStrip"
 spec:
   rules:
-  - host: node3
+  - host: whoami.mycluster.tld
     http:
       paths:
       - path: /
         backend:
           serviceName: whoami-service
-          servicePort: 80
+          servicePort: 8888

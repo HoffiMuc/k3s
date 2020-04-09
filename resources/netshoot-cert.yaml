@@ -30,4 +30,4 @@ spec:
   volumes:
     - name: registry-cert
       secret:
-        secretName: registry-ingress-tls
+        secretName: docker-registry-tls

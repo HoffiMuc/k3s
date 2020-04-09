@@ -12,11 +12,17 @@ finish() {
 }
 trap finish EXIT
 
+if [[ "$1" = "skip" ]]; then exit 0 ; fi
+
+echo $0
+echo ${0//?/=}
+echo
+
 set -ue
 set -x
 
 # Create containers
-for NODE in "${NODES[@]}"; do multipass launch --name "${NODE}" --cpus 2 --mem 4G --disk 10G; done
+for NODE in "${NODES[@]}"; do multipass launch --name "${NODE}" --cpus 2 --mem 2G --disk 5G xenial; done
 
 # Wait a few seconds for nodes to be up
 sleep 5
@@ -64,6 +70,11 @@ for NODE in "${NODES[@]}"; do
     multipass exec "${NODE}" -- bash -c 'sudo cat /home/ubuntu/id_rsa.pub >> /home/ubuntu/.ssh/authorized_keys'
     multipass exec "${NODE}" -- bash -c 'sudo chown ubuntu:ubuntu /etc/hosts'
     multipass exec "${NODE}" -- bash -c 'sudo cat /home/ubuntu/hosts >> /etc/hosts'
+    # add self-signed cert
+    sudo multipass transfer "${CERT_FILENAME}" ${NODE}:/tmp/
+    multipass exec "${NODE}" -- sudo mv /tmp/${CERT_FILENAME##*/} /usr/local/share/ca-certificates/
+    multipass exec "${NODE}" -- sudo update-ca-certificates
+
 done
 
 set +x

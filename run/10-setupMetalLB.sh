@@ -10,6 +10,10 @@ finish() {
 }
 trap finish EXIT
 
+echo $0
+echo ${0//?/=}
+echo
+
 set -ue
 set -x
 
@@ -22,7 +26,11 @@ kubectl apply -f https://raw.githubusercontent.com/google/metallb/${metalLBVersi
 # On first install only
 kubectl create secret generic -n metallb-system memberlist --from-literal=secretkey="$(openssl rand -base64 128)"
 
-kubectl create -f "${REPOROOTDIR}/resources/metal-lb-layer2-config.yaml"
+kubectl apply -f "${REPOROOTDIR}/resources/metal-lb-layer2-config.yaml"
 
 kubectl get svc -A
 kubectl get svc -A | grep -E 'traefik[^-]' | awk '{print "traefik EXTERNAL-IP: " $5}'
+
+
+echo
+${SCRIPTDIR}/21-setupDnsmasq.sh traefik-ingress

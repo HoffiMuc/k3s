@@ -1,44 +1,48 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  namespace: kube-system
-  name: image-registry
+  name: docker-registry
+  namespace: registry-ns
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: image-registry
+      app: docker-registry
   template:
     metadata:
       labels:
-        app: image-registry
+        app: docker-registry
     spec:
-      nodeName: node0
       containers:
-        - name: image-registry-container
+        - name: docker-registry-container
           image: registry:2
           env:
             - name: REGISTRY_HTTP_ADDR
               value: ":5000"
             - name: REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY
               value: "/var/lib/registry"
-            - name: REGISTRY_HTTP_TLS_CERTIFICATE
-              value: /cert/tls.crt
-            - name: REGISTRY_HTTP_TLS_KEY
-              value: /cert/tls.key
+            # TLS (might be terminated at ingress controller)
+            #- name: REGISTRY_HTTP_TLS_CERTIFICATE
+            #  value: /cert/tls.crt
+            #- name: REGISTRY_HTTP_TLS_KEY
+            #  value: /cert/tls.key
           ports:
             - name: http
               containerPort: 5000
           volumeMounts:
             - name: image-store
               mountPath: /var/lib/registry
-            - name: registry-cert
-              mountPath: /cert/
-              readOnly: true
+            # TLS (might be terminated at ingress controller)
+            #- name: registry-cert
+            #  mountPath: /cert/
+            #  readOnly: true
       volumes:
         - name: image-store
           emptyDir: {}
-        - name: registry-cert
-          secret:
-            secretName: registry-ingress-tls
+        # TLS (might be terminated at ingress controller)
+        #- name: registry-cert
+        #  secret:
+        #    secretName: docker-registry-tls
+        #    #secretName: selfsigned-cert
+
 
