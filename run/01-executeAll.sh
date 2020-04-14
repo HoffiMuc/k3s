@@ -25,6 +25,8 @@ if [[ "$SKIP" != "true" ]]; then
     time ${SCRIPTDIR}/02-setupVMs.sh
 fi
 time ${SCRIPTDIR}/03-setupK3s.sh $1
+sleep 5
+${SCRIPTDIR}/21-setupDnsmasq.sh traefik-ingress
 time ${SCRIPTDIR}/04-firstTimeK3sConfig.sh
 time ${SCRIPTDIR}/05-setupCertMgr.sh
 #time ${SCRIPTDIR}/10-setupMetalLB.sh

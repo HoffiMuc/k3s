@@ -70,6 +70,8 @@ for NODE in "${NODES[@]}"; do
     multipass exec "${NODE}" -- bash -c 'sudo cat /home/ubuntu/id_rsa.pub >> /home/ubuntu/.ssh/authorized_keys'
     multipass exec "${NODE}" -- bash -c 'sudo chown ubuntu:ubuntu /etc/hosts'
     multipass exec "${NODE}" -- bash -c 'sudo cat /home/ubuntu/hosts >> /etc/hosts'
+    # temporary edit /etc/resolv.conf nameserver
+    multipass exec "${NODE}" -- bash -c "sudo sed -i\".bak\" -r \"0,/^nameserver .*/ s/^nameserver .*/nameserver ${DNSSERVER}/\" /etc/resolv.conf"
     # add self-signed cert
     sudo multipass transfer "${CERT_FILENAME}" ${NODE}:/tmp/
     multipass exec "${NODE}" -- sudo mv /tmp/${CERT_FILENAME##*/} /usr/local/share/ca-certificates/

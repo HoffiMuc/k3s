@@ -64,14 +64,14 @@ sleep 5
 echo "############################################################################"
 # multipass exec node1 -- bash -c "sudo kubectl get nodes"
 multipass exec "${NODES[0]}" -- bash -c 'sudo cat /etc/rancher/k3s/k3s.yaml' > "${SCRIPTDIR%/*}/k3s.yaml"
-sed -i'.back' -e "s/127.0.0.1/${NODES[0]}/g" "${SCRIPTDIR%/*}/k3s.yaml"
+sed -i'.bak' -e "s/127.0.0.1/${NODES[0]}/g" "${SCRIPTDIR%/*}/k3s.yaml"
 export KUBECONFIG="${SCRIPTDIR%/*}/k3s.yaml"
 kubectl taint node "${NODES[0]}" --overwrite node-role.kubernetes.io/master=effect:NoSchedule
 for (( i=1; i<${#NODES[@]}; i++ )); do
     kubectl label node "${NODES[$i]}" --overwrite node-role.kubernetes.io/node=
 done
 sleep 2
+set -x
 kubectl get nodes -o wide
-
-echo
-${SCRIPTDIR}/21-setupDnsmasq.sh traefik-ingress
+sleep 5
+kubectl get -n kube-system svc traefik
