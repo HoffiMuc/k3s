@@ -10,10 +10,11 @@ else
 fi
 
 export NODECOUNT=4
+export MULTIPASSBASEOS=xenial # lts
 export NODENAMEPREFIX="node"
 export REGISTRY_NAMESPACE=registry-ns
-export HOSTIP=192.168.0.3
-export DNSSERVER=192.168.0.1
+export HOSTIP=192.168.178.3
+export DNSSERVER=192.168.178.1
 
 #export MYCLUSTER_DOMAIN=mycluster.tld
 export MYCLUSTER_DOMAIN=hoffimuc.com

@@ -23,6 +23,9 @@ finish() {
 }
 trap finish EXIT
 
+SKIP="false"
+if [[ "$1" = "skip" ]]; then shift ; SKIP="true" ; fi
+
 LOCALK3SEXE="download"
 if [ "$1" = "local" ] && [[ -e ${SCRIPTDIR}/k3sLocalScript/k3s ]]; then
     LOCALK3SEXE="local"
@@ -74,4 +77,5 @@ sleep 2
 set -x
 kubectl get nodes -o wide
 sleep 5
+set +e
 kubectl get -n kube-system svc traefik

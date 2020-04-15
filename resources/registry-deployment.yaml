@@ -21,7 +21,7 @@ spec:
               value: ":5000"
             - name: REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY
               value: "/var/lib/registry"
-            # TLS (might be terminated at ingress controller)
+            ## TLS (might be terminated at ingress controller)
             #- name: REGISTRY_HTTP_TLS_CERTIFICATE
             #  value: /cert/tls.crt
             #- name: REGISTRY_HTTP_TLS_KEY
@@ -30,17 +30,17 @@ spec:
             - name: http
               containerPort: 5000
           volumeMounts:
-            - name: image-store
+            - name: image-store-volume
               mountPath: /var/lib/registry
-            # TLS (might be terminated at ingress controller)
-            #- name: registry-cert
+            ## TLS (might be terminated at ingress controller)
+            #- name: registry-cert-volume
             #  mountPath: /cert/
             #  readOnly: true
       volumes:
-        - name: image-store
+        - name: image-store-volume
           emptyDir: {}
-        # TLS (might be terminated at ingress controller)
-        #- name: registry-cert
+        ## TLS (might be terminated at ingress controller)
+        #- name: registry-cert-volume
         #  secret:
         #    secretName: docker-registry-tls
         #    #secretName: selfsigned-cert

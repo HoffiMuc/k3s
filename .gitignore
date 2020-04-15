@@ -3,6 +3,5 @@
 /certs/
 /k3s.yaml
 /k3s.yaml.back
-run/etchosts
-run/etchosts.unix
-run/hosts
+/hosts
+*.bak

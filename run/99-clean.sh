@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 SCRIPTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+REPOROOTDIR=${SCRIPTDIR%/*}
 
 # defines NODES array
 source "$SCRIPTDIR/00-setupVars.sh"
@@ -27,10 +28,8 @@ sudo sed -e :a -i "" -e  '/^\n*$/{$d;N;};/\n$/ba' /etc/hosts # delete trailing e
 sudo echo "" | sudo tee -a  /etc/hosts # add empty line to end
 
 echo "removing temporary files (if exist):"
-rm -v "${SCRIPTDIR%/*}/k3s.yaml"      2>/dev/null
-rm -v "${SCRIPTDIR%/*}/k3s.yaml.back" 2>/dev/null
-rm -v "$SCRIPTDIR/hosts"              2>/dev/null
-rm -v "$SCRIPTDIR/etchosts"           2>/dev/null
-rm -v "$SCRIPTDIR/etchosts.unix"      2>/dev/null
+rm -v "${REPOROOTDIR}/k3s.yaml"      2>/dev/null
+rm -v "${REPOROOTDIR}/k3s.yaml.back" 2>/dev/null
+rm -v "${REPOROOTDIR}/hosts"         2>/dev/null
 
 echo "done."
